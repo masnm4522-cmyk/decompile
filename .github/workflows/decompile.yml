@@ -1,0 +1,17 @@
+name: decompile
+on: [workflow_dispatch]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get install -y cmake g++
+          git clone https://github.com/zrax/pycdc
+          cd pycdc && cmake . && make -j4 && cd ..
+          mkdir out
+          ./pycdc/pycdc highrise_bot.pyc > out/highrise_bot.py || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: decompiled
+          path: out
